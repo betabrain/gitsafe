@@ -40,6 +40,7 @@ setup(
         "dev": [
             "black",
             "wheel",
+            "twine",
         ]
     },
     entry_points={
