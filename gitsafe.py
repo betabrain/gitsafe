@@ -59,7 +59,7 @@ def add(source: str):
 @main.command()
 def update():
     for repo in Repository.select():
-        echo(style(repo.source, fg=colors.BRIGHT_BLUE) + " ...")
+        echo(style(repo.source, fg=colors.BRIGHT_BLUE))
         echo(f"    Uuid: " + style(repo.uuid, fg=colors.YELLOW))
 
         t = -time()
