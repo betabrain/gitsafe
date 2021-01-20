@@ -12,7 +12,14 @@ def git_describe():
         text=True,
     ).stdout
     parts = output.strip()[1:].split("-")
-    return f"{parts[0]}.post{parts[1]}+{'.'.join(parts[2:])}"
+    if len(parts) == 1:
+        return f"{parts[0]}"
+    elif parts[1].isdigit():
+        return f"{parts[0]}.post{parts[1]}"
+    elif "dirty" in parts or "broken" in parts:
+        return f"{parts[0]}+{'.'.join(parts[1:])}"
+    else:
+        return f"{parts[0]}.post{parts[1]}+{'.'.join(parts[2:])}"
 
 
 def readme():
