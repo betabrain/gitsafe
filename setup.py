@@ -39,6 +39,7 @@ setup(
     extras_require={
         "dev": [
             "black",
+            "wheel",
         ]
     },
     entry_points={
