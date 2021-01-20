@@ -3,6 +3,7 @@ from os import getcwd
 from os.path import exists
 from subprocess import run
 from time import time
+from typing import List
 from uuid import uuid4
 
 from sqlobject import connectionForURI, sqlhub, SQLObject, StringCol, DateTimeCol
@@ -52,13 +53,18 @@ def list():
 
 
 @main.command()
-def add(source: str):
-    Repository.fresh(source)
+def add(sources: List[str]):
+    for source in sources:
+        Repository.fresh(source)
 
 
 @main.command()
-def update():
+def update(fast: bool = True):
     for repo in Repository.select():
+        age = (datetime.now(timezone.utc) - repo.updated).total_seconds()
+        if fast and repo.updated and age <= 86400:
+            continue
+
         echo(style(repo.source, fg=colors.BRIGHT_BLUE))
         echo(f"    Uuid: " + style(repo.uuid, fg=colors.YELLOW))
 
