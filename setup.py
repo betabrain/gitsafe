@@ -6,20 +6,16 @@ from setuptools import setup
 
 def git_describe():
     output = run(
-        "git describe --tags --dirty --broken",
+        "git describe --tags --dirty --broken --long",
         capture_output=True,
         check=True,
         text=True,
     ).stdout
     parts = output.strip()[1:].split("-")
-    if len(parts) == 1:
-        return f"{parts[0]}"
-    elif len(parts) == 2 and parts[1].isdigit():
-        return f"{parts[0]}.post{parts[1]}"
-    elif len(parts) in (2, 3) and ("dirty" in parts or "broken" in parts) and not parts[1].isdigit():
-        return f"{parts[0]}+{'.'.join(parts[1:])}"
-    else:
-        return f"{parts[0]}.post{parts[1]}+{'.'.join(parts[2:])}"
+    parts[1] = f".post{parts[1]}" if parts[1] != "0" else ""
+    parts[2] = f"+{'.'.join(parts[2:])}"
+    del parts[3:]
+    return "".join(parts)
 
 
 def readme():
