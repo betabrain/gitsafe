@@ -61,7 +61,7 @@ def add(sources: List[str]):
 @main.command()
 def update(fast: bool = True):
     for repo in Repository.select():
-        age = (datetime.now(timezone.utc) - repo.updated).total_seconds()
+        age = (datetime.utcnow() - repo.updated).total_seconds()
         if fast and repo.updated and age <= 86400:
             continue
 
