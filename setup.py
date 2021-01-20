@@ -32,7 +32,7 @@ setup(
     author_email="tammann@ergonomics.ch",
     license="MIT",
     py_modules=["gitsafe"],
-    install_requires=["SQLObject", "tabulate"],
+    install_requires=["colorama", "SQLObject", "sh", "tabulate", "tqdm", "typer"],
     extras_require={
         "dev": [
             "black",
