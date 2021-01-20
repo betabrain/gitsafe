@@ -12,10 +12,13 @@ def git_describe():
         text=True,
     ).stdout
     parts = output.strip()[1:].split("-")
-    parts[1] = f".post{parts[1]}" if parts[1] != "0" else ""
-    parts[2] = f"+{'.'.join(parts[2:])}"
-    del parts[3:]
-    return "".join(parts)
+    if len(parts) == 3 and parts[1] == "0":
+        return parts[0]
+    else:
+        parts[1] = f".post{parts[1]}" if parts[1] != "0" else ""
+        parts[2] = f"+{'.'.join(parts[2:])}"
+        del parts[3:]
+        return "".join(parts)
 
 
 def readme():
