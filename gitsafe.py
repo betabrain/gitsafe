@@ -61,9 +61,10 @@ def add(sources: List[str]):
 @main.command()
 def update(fast: bool = True):
     for repo in Repository.select():
-        age = (datetime.utcnow() - repo.updated).total_seconds()
-        if fast and repo.updated and age <= 86400:
-            continue
+        if fast and repo.updated:
+            age = (datetime.utcnow() - repo.updated).total_seconds()
+            if age <= 86400:
+                continue
 
         echo(style(repo.source, fg=colors.BRIGHT_BLUE))
         echo(f"    Uuid: " + style(repo.uuid, fg=colors.YELLOW))
