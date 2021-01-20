@@ -1,4 +1,6 @@
+from configparser import ConfigParser
 from datetime import timezone, datetime
+from glob import glob
 from os import getcwd
 from os.path import exists
 from subprocess import run
@@ -55,7 +57,35 @@ def list():
 @main.command()
 def add(sources: List[str]):
     for source in sources:
-        Repository.fresh(source)
+        try:
+            Repository.fresh(source)
+        except Exception as exception:
+            echo(style(f"Adding {source} failed: {exception}"))
+
+
+@main.command()
+def add_remotes(pattern: str):
+    detected = []
+    for path in glob(f"{pattern}/.git/config", recursive=True):
+        config = ConfigParser()
+        config.read(path)
+        url = config['remote "origin"']["url"]
+
+        if "github.com" in url:
+            url = url.replace("ssh://git@github.com/", "https://github.com/")
+
+            if "github.com" in url and url.endswith(".git"):
+                url = url.replace("git://github.com/", "https://github.com/").replace(
+                    "git@github.com:", "https://github.com/"
+                )[:-4]
+
+            echo(style("GITHUB", fg=colors.BRIGHT_GREEN) + f" {url}")
+            detected.append(url)
+        else:
+            echo(style("UNHANDLED", fg=colors.RED) + f" {url}")
+
+    echo(style(f"Importing {len(detected)} repositories...", fg=colors.BLUE))
+    add(detected)
 
 
 @main.command()
